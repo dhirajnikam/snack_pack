@@ -1,0 +1,7 @@
+# Files to exclude from the published package
+.github/
+.vscode/
+.idea/
+*.iml
+.DS_Store
+example/
