@@ -1,16 +1,27 @@
-# Snack Pack
+# 🍿 Snack Pack
 
-A beautiful and customizable animated snack bar package for Flutter. Display top-aligned snack bars with smooth animations and swipe-to-dismiss functionality.
+[![pub package](https://img.shields.io/pub/v/snack_pack.svg)](https://pub.dev/packages/snack_pack)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Platform](https://img.shields.io/badge/platform-android%20|%20ios%20|%20web%20|%20macos%20|%20windows%20|%20linux-lightgrey)](https://pub.dev/packages/snack_pack)
+
+A beautiful and customizable animated snack bar package for Flutter. Display top-aligned snack bars with smooth animations, swipe-to-dismiss functionality, and responsive positioning that adapts to any screen size.
+
+## Why Snack Pack?
+
+Unlike Flutter's built-in `SnackBar` which appears at the bottom, Snack Pack provides **top-aligned notifications** that are more noticeable and don't interfere with bottom navigation or floating action buttons. Perfect for modern app UIs!
 
 ## Features
 
 - **Four Built-in Types**: Success, Failure, Warning, and Info with distinct colors and icons
 - **Smooth Animations**: Slide-in and slide-out animations with customizable curves
-- **Swipe to Dismiss**: Users can swipe up to dismiss the snack bar
+- **Swipe to Dismiss**: Users can swipe up to dismiss the snack bar instantly
 - **Auto-Dismiss**: Automatically dismisses after a customizable duration
-- **Smart Queue Management**: Only one snack bar visible at a time
-- **Safe Area Aware**: Respects device notches and status bars
-- **Easy to Use**: Simple API with sensible defaults
+- **Smart Queue Management**: Only one snack bar visible at a time - no overlapping notifications
+- **Responsive Design**: Adapts to screen size - full-width on mobile, top-right corner on large screens
+- **Safe Area Aware**: Respects device notches, status bars, and safe areas
+- **Lightweight**: Minimal dependencies, just Flutter SDK
+- **Highly Customizable**: Configure positioning, duration, and responsive breakpoints
+- **Easy to Use**: Simple API with sensible defaults - get started in seconds
 
 ## Installation
 
@@ -25,6 +36,24 @@ Then run:
 
 ```bash
 flutter pub get
+```
+
+## Quick Start
+
+Get up and running in just 3 steps:
+
+```dart
+// 1. Import the package
+import 'package:snack_pack/snack_pack.dart';
+
+// 2. Call showCustomSnackBar anywhere you have a BuildContext
+showCustomSnackBar(
+  context,
+  'Hello, Snack Pack!',
+  SnackBarType.success,
+);
+
+// 3. That's it! The snack bar will automatically appear and dismiss
 ```
 
 ## Usage
@@ -214,10 +243,39 @@ Displays a custom animated snack bar at the top of the screen.
 
 An enum with four values:
 
-- `SnackBarType.success` - Green background with check icon
-- `SnackBarType.failure` - Red background with error icon
-- `SnackBarType.warning` - Orange background with warning icon
-- `SnackBarType.info` - Blue background with info icon
+| Type | Color | Icon | Use Case |
+|------|-------|------|----------|
+| `SnackBarType.success` | Green | ✓ Check Circle | Successful operations, confirmations |
+| `SnackBarType.failure` | Red | ✕ Error | Errors, failed operations |
+| `SnackBarType.warning` | Orange | ⚠ Warning | Warnings, caution messages |
+| `SnackBarType.info` | Blue | ℹ Info | Informational messages, tips |
+
+### `SnackPackConfig`
+
+Configuration class for customizing the snack bar's responsive behavior and positioning.
+
+**Properties:**
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `largeBreakpoint` | `double` | `1024` | Screen width (in logical pixels) at or above which the snack bar appears at top-right |
+| `maxWidthOnLarge` | `double` | `420` | Maximum width of the snack bar on large screens |
+| `margin` | `EdgeInsets` | `EdgeInsets.symmetric(horizontal: 16, vertical: 16)` | Outer padding from screen edges |
+
+**Example:**
+
+```dart
+showCustomSnackBar(
+  context,
+  'Custom configuration',
+  SnackBarType.info,
+  config: const SnackPackConfig(
+    largeBreakpoint: 1200,    // Tablets and desktops
+    maxWidthOnLarge: 500,     // Wider on large screens
+    margin: EdgeInsets.all(24), // More spacing
+  ),
+);
+```
 
 ## Behavior
 
@@ -225,7 +283,8 @@ An enum with four values:
 - **Manual Dismiss**: Users can swipe up to manually dismiss
 - **Queue Management**: If a new snack bar is shown while one is visible, the old one is immediately removed
 - **Animation**: 250ms slide-in and slide-out animations with ease-out curve
- - **Responsive**: On large screens, snack bars appear top-right with constrained max width
+- **Responsive**: On large screens (≥1024px), snack bars appear top-right with constrained max width
+- **Performance**: Uses Flutter's overlay system for optimal rendering without rebuilding your widget tree
 
 ## Platform Support
 
@@ -248,9 +307,125 @@ Below are example screenshots of Snack Pack in action. On large screens, the sna
 
 If the images are not visible yet, generate them with the steps in `example/screenshots/README.md`.
 
+## Advanced Usage
+
+### Real-World Examples
+
+**Form Validation:**
+```dart
+void submitForm() {
+  if (!validateEmail(email)) {
+    showCustomSnackBar(
+      context,
+      'Please enter a valid email address',
+      SnackBarType.warning,
+    );
+    return;
+  }
+
+  // Process form...
+  showCustomSnackBar(
+    context,
+    'Form submitted successfully!',
+    SnackBarType.success,
+  );
+}
+```
+
+**Network Operations:**
+```dart
+Future<void> fetchData() async {
+  try {
+    final data = await api.getData();
+    showCustomSnackBar(
+      context,
+      'Data loaded successfully',
+      SnackBarType.success,
+      duration: const Duration(seconds: 2),
+    );
+  } catch (e) {
+    showCustomSnackBar(
+      context,
+      'Failed to load data: ${e.toString()}',
+      SnackBarType.failure,
+      duration: const Duration(seconds: 5),
+    );
+  }
+}
+```
+
+**User Actions:**
+```dart
+void deleteItem(String itemName) {
+  // Delete the item...
+  showCustomSnackBar(
+    context,
+    '$itemName has been deleted',
+    SnackBarType.info,
+  );
+}
+```
+
+## FAQ
+
+**Q: Can I show multiple snack bars at once?**
+A: No, Snack Pack uses smart queue management to ensure only one snack bar is visible at a time. This prevents overlapping notifications and provides a better user experience. When a new snack bar is shown, the previous one is automatically dismissed.
+
+**Q: How do I customize the colors or icons?**
+A: Currently, Snack Pack provides four predefined types with their own colors and icons. For custom designs, you can fork the package or submit a feature request for extended customization options.
+
+**Q: Can I position the snack bar at the bottom?**
+A: Snack Pack is specifically designed for top-aligned notifications. For bottom notifications, consider using Flutter's built-in `SnackBar` widget.
+
+**Q: Does it work with dark mode?**
+A: Yes! Snack Pack's colors are designed to work well in both light and dark themes. The white text provides good contrast against all background colors.
+
+**Q: Is it compatible with Navigator 2.0 and GoRouter?**
+A: Yes, as long as you have access to a valid `BuildContext` with an `Overlay`, Snack Pack will work with any routing solution.
+
+**Q: Can I prevent users from dismissing the snack bar?**
+A: Currently, users can always swipe to dismiss. The snack bar will also auto-dismiss after the specified duration. This behavior ensures users are never blocked by persistent notifications.
+
+## Performance
+
+Snack Pack is designed to be lightweight and performant:
+
+- **Zero rebuilds**: Uses Flutter's overlay system, so showing a snack bar doesn't trigger rebuilds in your widget tree
+- **Efficient animations**: Hardware-accelerated animations using `AnimationController`
+- **Smart disposal**: Automatically cleans up resources when dismissed
+- **Minimal footprint**: Only ~270 lines of code with no external dependencies
+
+## Troubleshooting
+
+**Snack bar not appearing:**
+- Ensure you're passing a valid `BuildContext` that has access to an `Overlay`
+- Check that your widget is wrapped in a `MaterialApp` or has an overlay ancestor
+- Verify you're not calling it before the first frame is rendered
+
+**Snack bar appearing behind other widgets:**
+- This shouldn't happen as Snack Pack uses the overlay system which renders on top
+- If you have custom overlays, ensure they're not blocking Snack Pack's overlay
+
+**Animation stuttering:**
+- This may indicate performance issues in your app
+- Snack Pack uses standard Flutter animations that should be smooth on all platforms
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests: `flutter test`
+5. Format code: `dart format .`
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+All pull requests are automatically tested via GitHub Actions.
 
 ## License
 
