@@ -238,6 +238,16 @@ An enum with four values:
 | Windows | ✅ |
 | Linux | ✅ |
 
+## Screenshots
+
+Below are example screenshots of Snack Pack in action. On large screens, the snack appears at the top-right with a constrained max width.
+
+| Phone (portrait) | Desktop/Web (large screen) |
+|---|---|
+| ![Phone screenshot](example/screenshots/phone.png) | ![Desktop screenshot](example/screenshots/desktop.png) |
+
+If the images are not visible yet, generate them with the steps in `example/screenshots/README.md`.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
