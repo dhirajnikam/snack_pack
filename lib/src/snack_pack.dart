@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async'; // Added for Timer
 
 /// Configuration for responsive layout and positioning.
 class SnackPackConfig {
@@ -118,6 +119,7 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   bool _isDismissed = false;
+  Timer? _autoDismissTimer; // ADD THIS
 
   @override
   void initState() {
@@ -137,7 +139,8 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
     _controller.forward();
 
     // Auto-dismiss after the specified duration.
-    Future.delayed(widget.duration, () {
+    // REPLACE Future.delayed with Timer
+    _autoDismissTimer = Timer(widget.duration, () {
       if (!_isDismissed && mounted) {
         _dismissSnackBar();
       }
@@ -158,6 +161,7 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
 
   @override
   void dispose() {
+    _autoDismissTimer?.cancel(); // ADD THIS to cancel timer on dispose
     _controller.dispose();
     super.dispose();
   }

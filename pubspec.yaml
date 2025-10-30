@@ -1,6 +1,6 @@
 name: snack_pack
 description: A beautiful and customizable animated snack bar package for Flutter. Display top-aligned snack bars with smooth animations and swipe-to-dismiss functionality.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/dhirajnikam/snack_pack
 repository: https://github.com/dhirajnikam/snack_pack
 issue_tracker: https://github.com/dhirajnikam/snack_pack/issues
