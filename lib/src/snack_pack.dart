@@ -196,7 +196,7 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
     final topInset = mediaQuery.padding.top + widget.config.margin.top;
     final isLarge = mediaQuery.size.width >= widget.config.largeBreakpoint;
 
-    final EdgeInsets horizontalMargin = EdgeInsets.only(
+    final horizontalMargin = EdgeInsets.only(
       left: isLarge ? 0 : widget.config.margin.left,
       right: widget.config.margin.right,
     );
@@ -239,7 +239,7 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
 
     if (isLarge) {
       // Constrain width and align to top-right on large screens.
-      final double maxWidth = widget.config.maxWidthOnLarge;
+      final maxWidth = widget.config.maxWidthOnLarge;
       content = Align(
         alignment: Alignment.topRight,
         child: Padding(

@@ -23,6 +23,5 @@
 ///   SnackBarType.success,
 /// );
 /// ```
-library snack_pack;
 
 export 'src/snack_pack.dart';
