@@ -2,6 +2,31 @@
 
 This document provides step-by-step instructions for testing and publishing the Snack Pack package to pub.dev.
 
+## 🤖 Automatic Publishing (Recommended)
+
+This repository is configured with **GitHub Actions** for automatic publishing to pub.dev!
+
+When you push to `main` with "release" in the commit message or push a version tag, the package is automatically:
+- ✓ Formatted and analyzed
+- ✓ Tested
+- ✓ Published to pub.dev
+
+See [`.github/PUBLISHING.md`](.github/PUBLISHING.md) for setup instructions.
+
+**Quick publish:**
+```bash
+# Update version and changelog, then:
+git add .
+git commit -m "release: version 1.0.1"
+git push origin main
+```
+
+---
+
+## Manual Publishing
+
+If you prefer to publish manually, follow this guide:
+
 ## Pre-Publishing Checklist
 
 Before publishing, ensure you've completed all of these steps:
