@@ -1,5 +1,25 @@
 import 'package:flutter/material.dart';
 
+/// Configuration for responsive layout and positioning.
+class SnackPackConfig {
+  /// Width breakpoint at or above which the snack bar is shown at the top-right.
+  final double largeBreakpoint;
+
+  /// Maximum width of the snack bar on large screens.
+  final double maxWidthOnLarge;
+
+  /// Outer padding from screen edges.
+  final EdgeInsets margin;
+
+  const SnackPackConfig({
+    this.largeBreakpoint = 1024,
+    this.maxWidthOnLarge = 420,
+    this.margin = const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+  });
+
+  static const SnackPackConfig defaults = SnackPackConfig();
+}
+
 /// Enum representing the type of snack bar to display.
 ///
 /// Each type has a distinct color and icon to convey the message's intent.
@@ -45,6 +65,7 @@ void showCustomSnackBar(
   String message,
   SnackBarType type, {
   Duration duration = const Duration(seconds: 3),
+  SnackPackConfig config = SnackPackConfig.defaults,
 }) {
   final overlay = Overlay.of(context);
 
@@ -58,6 +79,7 @@ void showCustomSnackBar(
       message: message,
       type: type,
       duration: duration,
+      config: config,
       onDismissed: () {
         overlayEntry.remove();
         // Clear the global reference if it points to this overlay.
@@ -77,11 +99,13 @@ class _TopSnackBarWrapper extends StatefulWidget {
   final SnackBarType type;
   final Duration duration;
   final VoidCallback onDismissed;
+  final SnackPackConfig config;
 
   const _TopSnackBarWrapper({
     required this.message,
     required this.type,
     required this.duration,
+    required this.config,
     required this.onDismissed,
   });
 
@@ -168,45 +192,80 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: MediaQuery.of(context).padding.top + 16,
-      left: 16,
-      right: 16,
-      child: Dismissible(
-        key: UniqueKey(),
-        direction: DismissDirection.up,
-        // Intercept the swipe and trigger our custom animation.
-        confirmDismiss: (direction) async {
-          _dismissSnackBar();
-          return false;
-        },
-        child: SlideTransition(
-          position: _offsetAnimation,
-          child: Material(
-            elevation: 6,
-            borderRadius: BorderRadius.circular(8),
-            color: _getColorByType(widget.type).withOpacity(0.9),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 12.0,
-              ),
-              child: Row(
-                children: [
-                  Icon(_getIconByType(widget.type), color: Colors.white),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      widget.message,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+    final mediaQuery = MediaQuery.of(context);
+    final topInset = mediaQuery.padding.top + widget.config.margin.top;
+    final isLarge = mediaQuery.size.width >= widget.config.largeBreakpoint;
+
+    final EdgeInsets horizontalMargin = EdgeInsets.only(
+      left: isLarge ? 0 : widget.config.margin.left,
+      right: widget.config.margin.right,
+    );
+
+    Widget content = Dismissible(
+      key: UniqueKey(),
+      direction: DismissDirection.up,
+      // Intercept the swipe and trigger our custom animation.
+      confirmDismiss: (direction) async {
+        _dismissSnackBar();
+        return false;
+      },
+      child: SlideTransition(
+        position: _offsetAnimation,
+        child: Material(
+          elevation: 6,
+          borderRadius: BorderRadius.circular(8),
+          color: _getColorByType(widget.type).withOpacity(0.9),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 12.0,
+            ),
+            child: Row(
+              children: [
+                Icon(_getIconByType(widget.type), color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    widget.message,
+                    style: const TextStyle(color: Colors.white),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
       ),
+    );
+
+    if (isLarge) {
+      // Constrain width and align to top-right on large screens.
+      final double maxWidth = widget.config.maxWidthOnLarge;
+      content = Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: horizontalMargin,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: maxWidth,
+            ),
+            child: content,
+          ),
+        ),
+      );
+
+      return Positioned(
+        top: topInset,
+        right: 0,
+        child: content,
+      );
+    }
+
+    // Default: full-width (minus margins) top-aligned on smaller screens.
+    return Positioned(
+      top: topInset,
+      left: widget.config.margin.left,
+      right: widget.config.margin.right,
+      child: content,
     );
   }
 }

@@ -56,6 +56,23 @@ showCustomSnackBar(
 );
 ```
 
+### Responsive Positioning (Top-right on large screens)
+
+By default, on large screens (≥1024 logical px), Snack Pack constrains width and aligns the snack bar to the top-right. You can override breakpoints and sizing with `SnackPackConfig`:
+
+```dart
+showCustomSnackBar(
+  context,
+  'Custom layout on large screens',
+  SnackBarType.info,
+  config: const SnackPackConfig(
+    largeBreakpoint: 1200, // treat screens ≥1200 as large
+    maxWidthOnLarge: 480,  // limit width on large screens
+    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+  ),
+);
+```
+
 ### All Types
 
 ```dart
@@ -191,6 +208,7 @@ Displays a custom animated snack bar at the top of the screen.
 | `message` | `String` | Yes | - | The message text to display |
 | `type` | `SnackBarType` | Yes | - | The type of snack bar (success, failure, warning, or info) |
 | `duration` | `Duration` | No | `Duration(seconds: 3)` | How long the snack bar stays visible |
+| `config` | `SnackPackConfig` | No | `SnackPackConfig.defaults` | Controls responsive behavior and margins |
 
 ### `SnackBarType`
 
@@ -207,6 +225,7 @@ An enum with four values:
 - **Manual Dismiss**: Users can swipe up to manually dismiss
 - **Queue Management**: If a new snack bar is shown while one is visible, the old one is immediately removed
 - **Animation**: 250ms slide-in and slide-out animations with ease-out curve
+ - **Responsive**: On large screens, snack bars appear top-right with constrained max width
 
 ## Platform Support
 
