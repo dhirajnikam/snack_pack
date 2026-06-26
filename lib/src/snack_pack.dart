@@ -222,7 +222,10 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
         child: Material(
           elevation: 6,
           borderRadius: BorderRadius.circular(8),
-          color: _getColorByType(widget.type).withValues(alpha: 0.9),
+          // Use withOpacity (not withValues) to stay compatible with the
+          // declared Flutter >=3.0.0 floor; withValues requires Flutter 3.27+.
+          // ignore: deprecated_member_use
+          color: _getColorByType(widget.type).withOpacity(0.9),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,

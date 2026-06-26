@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.2] - 2026-06-26
 
 ### Fixed
-- Replaced deprecated `Color.withOpacity` with `Color.withValues` for Flutter 3.27+ compatibility.
 - The swipe-to-dismiss `Dismissible` now uses a stable key created once, instead of a new `UniqueKey()` on every rebuild (prevents gesture/animation state from resetting).
 - Corrected `dart:async` import ordering and added a `library;` directive to clear analyzer hints.
 - Removed the `package_api_docs` lint (removed in Dart 3.7) from `analysis_options.yaml`.
