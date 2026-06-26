@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'dart:async'; // Added for Timer
 
 /// Configuration for responsive layout and positioning.
 class SnackPackConfig {
@@ -119,7 +120,11 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   bool _isDismissed = false;
-  Timer? _autoDismissTimer; // ADD THIS
+  Timer? _autoDismissTimer;
+
+  // Stable key for the Dismissible. Created once so the gesture/animation state
+  // survives rebuilds (a fresh UniqueKey() per build would reset it).
+  final Key _dismissibleKey = UniqueKey();
 
   @override
   void initState() {
@@ -139,7 +144,6 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
     _controller.forward();
 
     // Auto-dismiss after the specified duration.
-    // REPLACE Future.delayed with Timer
     _autoDismissTimer = Timer(widget.duration, () {
       if (!_isDismissed && mounted) {
         _dismissSnackBar();
@@ -161,7 +165,7 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
 
   @override
   void dispose() {
-    _autoDismissTimer?.cancel(); // ADD THIS to cancel timer on dispose
+    _autoDismissTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -206,7 +210,7 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
     );
 
     Widget content = Dismissible(
-      key: UniqueKey(),
+      key: _dismissibleKey,
       direction: DismissDirection.up,
       // Intercept the swipe and trigger our custom animation.
       confirmDismiss: (direction) async {
@@ -218,7 +222,7 @@ class _TopSnackBarWrapperState extends State<_TopSnackBarWrapper>
         child: Material(
           elevation: 6,
           borderRadius: BorderRadius.circular(8),
-          color: _getColorByType(widget.type).withOpacity(0.9),
+          color: _getColorByType(widget.type).withValues(alpha: 0.9),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,

@@ -239,8 +239,8 @@ void main() {
       await tester.tap(find.text('Show'));
 
       // Wait up to 500ms, checking every 50ms, for the snack bar to appear
-      bool snackBarFound = false;
-      for (int i = 0; i < 10; i++) {
+      var snackBarFound = false;
+      for (var i = 0; i < 10; i++) {
         await tester.pump(const Duration(milliseconds: 50));
         if (find.text('Auto dismiss').evaluate().isNotEmpty) {
           snackBarFound = true;
@@ -251,7 +251,8 @@ void main() {
       expect(find.text('Auto dismiss'), findsOneWidget);
 
       // Wait for duration + animation time
-      await tester.pump(const Duration(milliseconds: 500)); // auto-dismiss timer
+      await tester
+          .pump(const Duration(milliseconds: 500)); // auto-dismiss timer
       await tester.pump(const Duration(milliseconds: 250)); // reverse animation
       await tester.pumpAndSettle();
 

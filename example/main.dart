@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
     });
     showCustomSnackBar(
       context,
-      'Counter incremented to counter!',
+      'Counter incremented to $_counter!',
       SnackBarType.success,
       duration: _selectedDuration,
     );
@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
               const Divider(),
               const SizedBox(height: 16),
               Text(
-                'Counter: counter',
+                'Counter: $_counter',
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

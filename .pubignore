@@ -5,3 +5,12 @@
 *.iml
 .DS_Store
 example/
+
+# Build artifacts, tooling and local-only files — must never be published.
+# NOTE: .pubignore replaces .gitignore for `dart pub publish`, so these must be
+# listed here explicitly even though .gitignore already covers them.
+build/
+.dart_tool/
+coverage/
+.teammates/
+pubspec.lock

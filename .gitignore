@@ -58,3 +58,5 @@ example/macos/Flutter/GeneratedPluginRegistrant.swift
 
 # Test coverage
 coverage/
+
+.teammates/
