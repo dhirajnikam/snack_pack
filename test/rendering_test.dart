@@ -136,7 +136,9 @@ void main() {
         // ignore: deprecated_member_use
         final expected = _expectedBaseColor[type]!.withOpacity(0.9);
         expect(surface.color, isNotNull);
-        expect(surface.color!.toARGB32(), expected.toARGB32(),
+        // Compare Color objects directly: Color equality is value-based and
+        // stable across Flutter versions (unlike toARGB32, which is 3.27+).
+        expect(surface.color, expected,
             reason: 'surface colour must be ${type.name} @ 0.9 opacity');
       });
     }
