@@ -1,18 +1,29 @@
 name: Publish to pub.dev
 
+# Publishes to pub.dev using pub.dev's automated publishing via GitHub Actions
+# OIDC — no stored credentials/secrets.
+#
+# One-time setup on pub.dev (repo owner):
+#   pub.dev -> package "snack_pack" -> Admin tab -> Automated publishing ->
+#   Enable publishing from GitHub Actions
+#     Repository:   dhirajnikam/snack_pack
+#     Tag pattern:  v{{version}}
+#
+# After that, pushing a version tag (e.g. v1.0.2) runs the gates below and
+# publishes automatically. `flutter pub publish` picks up the GitHub OIDC
+# token on its own because the job has `id-token: write` permission.
+
 on:
   push:
-    branches:
-      - main
     tags:
-      - 'v*.*.*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
-    # Only run if commit message contains 'release' or a version tag is pushed
-    if: contains(github.event.head_commit.message, 'release') || startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      id-token: write # Required for OIDC authentication with pub.dev
 
     steps:
       - name: Checkout repository
@@ -37,11 +48,7 @@ jobs:
         run: flutter test
 
       - name: Check publish warnings
-        run: dart pub publish --dry-run
+        run: flutter pub publish --dry-run
 
       - name: Publish to pub.dev
-        uses: k-paxian/dart-package-publisher@v1.6
-        with:
-          credentialJson: ${{ secrets.PUB_DEV_CREDENTIALS }}
-          flutter: true
-          skipTests: true  # Already ran tests above
+        run: flutter pub publish --force
